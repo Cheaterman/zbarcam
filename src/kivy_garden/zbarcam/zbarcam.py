@@ -78,6 +78,14 @@ class ZBarCam(AnchorLayout):
                 ),
             ).start()
 
+    def disable_scanning(self):
+        # Disabling necessary when using zbarcam in a multiple xcamera app
+        self.xcamera._camera.unbind(on_texture=self._on_texture)
+
+    def enable_scanning(self):
+        # When symbol detection is necessary again after self.disable_scanning
+        self._on_camera_ready(xcamera=self.xcamera)
+
     def _threaded_detect_qrcode_frame(self, texture, pixels, code_types):
         self._symbols_queue.put(
             self._detect_qrcode_frame(texture, code_types, pixels)
